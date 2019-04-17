@@ -51,7 +51,7 @@ public class PictureTester
     swan.explore();
   }
   public static void testDCT() {
-	  Picture beach = new Picture("caterpillar.jpg");
+	  Picture beach = new Picture("beach.jpg");
 	  beach.explore();
 	  beach.dct();
 	  System.out.println("dct done");
