@@ -204,22 +204,21 @@ public class Picture extends SimplePicture {
 		Pixel[][] currPixels = this.getPixels2D();
 		int i, j, k, l;
 		int m2 = currPixels.length;
-		int n2 =  currPixels[0].length;
+		int n2 = currPixels[0].length;
 		int n = 8, m = 8;
-		System.out.println("width: "+ m);
-		System.out.println("height: "+ n);
+		System.out.println("width: " + m);
+		System.out.println("height: " + n);
 
 		// dct will store the discrete cosine transform
 		double m1 = Math.sqrt(8);
 		double n1 = Math.sqrt(8);
 		double var2 = Math.sqrt(2);
 		double ci, cj, dctR, dctG, dctB, sumR, sumB, sumG;
-		
-		for (i = 0; i < m2; i++) {
-			for (j = 0; j < n2; j++)
-				System.out.printf("%f\t", currPixels[i][j].getAverage());
-			System.out.println();
-		}
+
+		/*
+		 * for (i = 0; i < m2; i++) { for (j = 0; j < n2; j++) System.out.printf("%f\t",
+		 * currPixels[i][j].getAverage()); System.out.println(); }
+		 */
 		for (int r = 0; r < m2; r += 8) { // for loops breaking up the image into 8x8 blocks
 			for (int c = 0; c < n2; c += 8) {
 
@@ -246,7 +245,8 @@ public class Picture extends SimplePicture {
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
 								// dct for red pixels
-								dctR = currPixels[k + r][l + c].getRed() * Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
+								dctR = currPixels[k + r][l + c].getRed() 
+										* Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
 										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
 								sumR = sumR + dctR;
 								// dct for green pixels;
@@ -259,14 +259,14 @@ public class Picture extends SimplePicture {
 										* Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
 										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
 								sumB = sumB + dctB;
-								
+
 							}
 						}
 						currPixels[i + r][j + c].setRed((int) (ci * cj * sumR));
 						currPixels[i + r][j + c].setGreen((int) (ci * cj * sumG));
 						currPixels[i + r][j + c].setBlue((int) (ci * cj * sumB));
-						
-						System.out.println("coordinates: x: "+(i+r)+ " y: "+(j+c));
+
+						System.out.println("coordinates: x: " + (i + r) + " y: " + (j + c));
 
 					}
 
@@ -293,14 +293,14 @@ public class Picture extends SimplePicture {
 	// inverse dct
 
 	public void idct() {
-	
+
 		int i, j, k, l;
 		// dct will store the discrete cosine transform
-		
+
 		Pixel[][] matrix = this.getPixels2D();
 		int m1 = matrix.length;
-		int n1 =  matrix[0].length;
-		
+		int n1 = matrix[0].length;
+
 		int m = 8, n = 8;
 		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG;
 		for (int r = 0; r < m1; r += 8) { // for loops breaking up the image into 8x8 blocks
@@ -320,6 +320,7 @@ public class Picture extends SimplePicture {
 
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
+								
 								if (k == 0)
 									ck = 1 / Math.sqrt(8);
 								else
@@ -330,24 +331,37 @@ public class Picture extends SimplePicture {
 								else
 									cl = Math.sqrt(2) / Math.sqrt(8);
 
-								dctR = matrix[k+r][l+c].getRed() * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								
+								dctR = matrix[k + r][l + c].getRed() 
+										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumR = sumR + ck * cl * dctR;
 
-								dctG = matrix[k+r][l+c].getGreen() * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								dctG = matrix[k + r][l + c].getGreen() 
+										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumG = sumG + ck * cl * dctG;
 
-								dctB = matrix[k+r][l+c].getBlue() * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								dctB = matrix[k + r][l + c].getBlue()
+										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumB = sumB + ck * cl * dctB;
 							}
 						}
+						if (sumR >= 255) {
+							sumR = 255;
+						}
+						if (sumG >= 255) {
+							sumG = 255;
+						}
+						if (sumB >= 255) {
+							sumB = 255;
+						}
 						
-						matrix[i+r][j+c].setRed((int) sumR);
-						matrix[i+r][j+c].setGreen((int) sumG);
-						matrix[i+r][j+c].setBlue((int) sumB);
-						//System.out.println("running inverse dct");
+						// System.out.println("running inverse dct");
+						matrix[i + r][j + c].setRed((int) sumR);
+						matrix[i + r][j + c].setGreen((int) sumG);
+						matrix[i + r][j + c].setBlue((int) sumB);
 					}
 				}
 			}
