@@ -190,7 +190,8 @@ public class Picture extends SimplePicture {
 			}
 		}
 	}
-
+//-----------------------------------------------------------------------------------------------------------
+// Dct performs the discrete cosine theorem on 8x8 blocks of pixels on the picture and returns the values in a 3-d RGB array
 	public double[][][] dct() {
 		Pixel[][] currPixels = this.getPixels2D();
 		int i, j, k, l;
@@ -360,6 +361,8 @@ public class Picture extends SimplePicture {
 	}
 
 	// --------------------------------------------------------------------------------------------------------------------------
+	//inverse idct method that shows the picture, but uses 3 seperate 8x8 array to store the colors and zero part of the array out...
+	// to blur it
 	public void idctBlur(double[][][] colorArray) {
 
 		int i, j, k, l, q, w;
@@ -379,7 +382,7 @@ public class Picture extends SimplePicture {
 				double[][] blurredBlueArray = new double[8][8];
 				for (q = 0; q < 8; q++) {
 					for (w = 0; w < 8; w++) {
-						if(q<=1 && w<=1) {
+						if(q<=3 && w<=3) {
 						blurredGreenArray[q][w] = colorArray[1][q+r][w+c];
 						blurredRedArray[q][w] = colorArray[0][q+r][w+c];
 						blurredBlueArray[q][w] = colorArray[2][q+r][w+c];
