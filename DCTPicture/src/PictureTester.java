@@ -53,10 +53,10 @@ public class PictureTester
   public static void testDCT() {
 	  Picture beach = new Picture("beach.jpg");
 	  beach.explore();
-	  beach.dct();
+	//  beach.dct();
 	  System.out.println("dct done");
 
-	  beach.idct();
+	  beach.idctBlur(beach.dct());
 	  beach.explore();
 	  System.out.println("done");
 	  

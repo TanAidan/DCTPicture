@@ -29,8 +29,7 @@ public class Picture extends SimplePicture {
 	/**
 	 * Constructor that takes a file name and creates the picture
 	 * 
-	 * @param fileName
-	 *            the name of the file to create the picture from
+	 * @param fileName the name of the file to create the picture from
 	 */
 	public Picture(String fileName) {
 		// let the parent class handle this fileName
@@ -40,10 +39,8 @@ public class Picture extends SimplePicture {
 	/**
 	 * Constructor that takes the width and height
 	 * 
-	 * @param height
-	 *            the height of the desired picture
-	 * @param width
-	 *            the width of the desired picture
+	 * @param height the height of the desired picture
+	 * @param width  the width of the desired picture
 	 */
 	public Picture(int height, int width) {
 		// let the parent class handle this width and height
@@ -53,8 +50,7 @@ public class Picture extends SimplePicture {
 	/**
 	 * Constructor that takes a picture and creates a copy of that picture
 	 * 
-	 * @param copyPicture
-	 *            the picture to copy
+	 * @param copyPicture the picture to copy
 	 */
 	public Picture(Picture copyPicture) {
 		// let the parent class do the copy
@@ -64,8 +60,7 @@ public class Picture extends SimplePicture {
 	/**
 	 * Constructor that takes a buffered image
 	 * 
-	 * @param image
-	 *            the buffered image to use
+	 * @param image the buffered image to use
 	 */
 	public Picture(BufferedImage image) {
 		super(image);
@@ -137,12 +132,9 @@ public class Picture extends SimplePicture {
 	 * copy from the passed fromPic to the specified startRow and startCol in the
 	 * current picture
 	 * 
-	 * @param fromPic
-	 *            the picture to copy from
-	 * @param startRow
-	 *            the start row to copy to
-	 * @param startCol
-	 *            the start col to copy to
+	 * @param fromPic  the picture to copy from
+	 * @param startRow the start row to copy to
+	 * @param startCol the start col to copy to
 	 */
 	public void copy(Picture fromPic, int startRow, int startCol) {
 		Pixel fromPixel = null;
@@ -179,8 +171,7 @@ public class Picture extends SimplePicture {
 	/**
 	 * Method to show large changes in color
 	 * 
-	 * @param edgeDist
-	 *            the distance for finding edges
+	 * @param edgeDist the distance for finding edges
 	 */
 	public void edgeDetection(int edgeDist) {
 		Pixel leftPixel = null;
@@ -200,7 +191,7 @@ public class Picture extends SimplePicture {
 		}
 	}
 
-	public void dct() {
+	public double[][][] dct() {
 		Pixel[][] currPixels = this.getPixels2D();
 		int i, j, k, l;
 		int m2 = currPixels.length;
@@ -214,7 +205,7 @@ public class Picture extends SimplePicture {
 		double n1 = Math.sqrt(8);
 		double var2 = Math.sqrt(2);
 		double ci, cj, dctR, dctG, dctB, sumR, sumB, sumG;
-
+		double[][][] colorArray = new double[3][m2][n2];
 		/*
 		 * for (i = 0; i < m2; i++) { for (j = 0; j < n2; j++) System.out.printf("%f\t",
 		 * currPixels[i][j].getAverage()); System.out.println(); }
@@ -245,8 +236,7 @@ public class Picture extends SimplePicture {
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
 								// dct for red pixels
-								dctR = currPixels[k + r][l + c].getRed() 
-										* Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
+								dctR = currPixels[k + r][l + c].getRed() * Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
 										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
 								sumR = sumR + dctR;
 								// dct for green pixels;
@@ -262,9 +252,9 @@ public class Picture extends SimplePicture {
 
 							}
 						}
-						currPixels[i + r][j + c].setRed((int) (ci * cj * sumR));
-						currPixels[i + r][j + c].setGreen((int) (ci * cj * sumG));
-						currPixels[i + r][j + c].setBlue((int) (ci * cj * sumB));
+						colorArray[0][i + r][j + c] = ((ci * cj * sumR));
+						colorArray[1][i + r][j + c] = ((ci * cj * sumG));
+						colorArray[2][i + r][j + c] = ((ci * cj * sumB));
 
 						System.out.println("coordinates: x: " + (i + r) + " y: " + (j + c));
 
@@ -286,13 +276,13 @@ public class Picture extends SimplePicture {
 		 * 
 		 * }
 		 */
-
+		return colorArray;
 	}
 
 	// -------------------------------------------------------------------------------------------------------------
 	// inverse dct
 
-	public void idct() {
+	public void idct(double[][][] colorArray) {
 
 		int i, j, k, l;
 		// dct will store the discrete cosine transform
@@ -320,7 +310,7 @@ public class Picture extends SimplePicture {
 
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
-								
+
 								if (k == 0)
 									ck = 1 / Math.sqrt(8);
 								else
@@ -331,19 +321,15 @@ public class Picture extends SimplePicture {
 								else
 									cl = Math.sqrt(2) / Math.sqrt(8);
 
-								
-								dctR = matrix[k + r][l + c].getRed() 
-										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								dctR = colorArray[0][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumR = sumR + ck * cl * dctR;
 
-								dctG = matrix[k + r][l + c].getGreen() 
-										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								dctG = colorArray[1][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumG = sumG + ck * cl * dctG;
 
-								dctB = matrix[k + r][l + c].getBlue()
-										* Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+								dctB = colorArray[2][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
 										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 								sumB = sumB + ck * cl * dctB;
 							}
@@ -357,7 +343,104 @@ public class Picture extends SimplePicture {
 						if (sumB >= 255) {
 							sumB = 255;
 						}
-						
+
+						// System.out.println("running inverse dct");
+						matrix[i + r][j + c].setRed((int) sumR);
+						matrix[i + r][j + c].setGreen((int) sumG);
+						matrix[i + r][j + c].setBlue((int) sumB);
+					}
+				}
+			}
+		}
+		for (i = 0; i < m1; i++) {
+			for (j = 0; j < n1; j++)
+				System.out.printf("%f\t", matrix[i][j].getAverage());
+			System.out.println();
+		}
+	}
+
+	// --------------------------------------------------------------------------------------------------------------------------
+	public void idctBlur(double[][][] colorArray) {
+
+		int i, j, k, l, q, w;
+		// dct will store the discrete cosine transform
+
+		Pixel[][] matrix = this.getPixels2D();
+		int m1 = matrix.length;
+		int n1 = matrix[0].length;
+
+		int m = 8, n = 8;
+		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG;
+		for (int r = 0; r < m1; r += 8) { // for loops breaking up the image into 8x8 blocks
+			for (int c = 0; c < n1; c += 8) {
+
+				double[][] blurredGreenArray = new double[8][8];
+				double[][] blurredRedArray = new double[8][8];
+				double[][] blurredBlueArray = new double[8][8];
+				for (q = 0; q < 8; q++) {
+					for (w = 0; w < 8; w++) {
+						if(q<=1 && w<=1) {
+						blurredGreenArray[q][w] = colorArray[1][q+r][w+c];
+						blurredRedArray[q][w] = colorArray[0][q+r][w+c];
+						blurredBlueArray[q][w] = colorArray[2][q+r][w+c];
+
+						}
+						else {
+							blurredGreenArray[q][w] = 0;
+							blurredRedArray[q][w] = 0;
+							blurredBlueArray[q][w] = 0;
+						}
+					}
+				}
+
+				for (i = 0; i < 8; i++) {
+					for (j = 0; j < 8; j++) {
+						// ci and cj depends on frequency as well as
+						// number of row and columns of specified matrix
+
+						// sum will temporarily store the sum of
+						// cosine signals
+
+						sumR = 0;
+						sumG = 0;
+						sumB = 0;
+
+						for (k = 0; k < 8; k++) {
+							for (l = 0; l < 8; l++) {
+
+								if (k == 0)
+									ck = 1 / Math.sqrt(8);
+								else
+									ck = Math.sqrt(2) / Math.sqrt(8);
+
+								if (l == 0)
+									cl = 1 / Math.sqrt(8);
+								else
+									cl = Math.sqrt(2) / Math.sqrt(8);
+
+								dctR = blurredRedArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								sumR = sumR + ck * cl * dctR;
+
+								dctG = blurredGreenArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								sumG = sumG + ck * cl * dctG;
+
+								dctB = blurredBlueArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								sumB = sumB + ck * cl * dctB;
+							}
+						}
+						if (sumR >= 255) {
+							sumR = 255;
+						}
+						if (sumG >= 255) {
+							sumG = 255;
+						}
+						if (sumB >= 255) {
+							sumB = 255;
+						}
+
 						// System.out.println("running inverse dct");
 						matrix[i + r][j + c].setRed((int) sumR);
 						matrix[i + r][j + c].setGreen((int) sumG);
