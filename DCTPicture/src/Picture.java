@@ -191,7 +191,8 @@ public class Picture extends SimplePicture {
 		}
 	}
 //-----------------------------------------------------------------------------------------------------------
-// Dct performs the discrete cosine theorem on 8x8 blocks of pixels on the picture and returns the values in a 3-d RGB array
+// Dct performs the discrete cosine theorem on 8x8 blocks of pixels on the picture and returns the values in 
+
 	public double[][][] dct() {
 		Pixel[][] currPixels = this.getPixels2D();
 		int i, j, k, l;
@@ -237,18 +238,17 @@ public class Picture extends SimplePicture {
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
 								// dct for red pixels
-								dctR = currPixels[k + r][l + c].getRed() * Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
+								double a = Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
 										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
+								dctR = currPixels[k + r][l + c].getRed() * a;
 								sumR = sumR + dctR;
 								// dct for green pixels;
 								dctG = currPixels[k + r][c + l].getGreen()
-										* Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
-										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
+										* a;
 								sumG = sumG + dctG;
 								// dct for blue pixels;
 								dctB = currPixels[k + r][l + c].getBlue()
-										* Math.cos((2 * k + 1) * i * Math.PI / (2 * m))
-										* Math.cos((2 * l + 1) * j * Math.PI / (2 * n));
+										* a;
 								sumB = sumB + dctB;
 
 							}
@@ -293,7 +293,9 @@ public class Picture extends SimplePicture {
 		int n1 = matrix[0].length;
 
 		int m = 8, n = 8;
-		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG;
+		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG, c1,c2;
+		c1 = Math.sqrt(2);
+		c2 = Math.sqrt(8);
 		for (int r = 0; r < m1; r += 8) { // for loops breaking up the image into 8x8 blocks
 			for (int c = 0; c < n1; c += 8) {
 
@@ -311,27 +313,26 @@ public class Picture extends SimplePicture {
 
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
+								double a =  Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 
 								if (k == 0)
-									ck = 1 / Math.sqrt(8);
+									ck = 1 / c2;
 								else
-									ck = Math.sqrt(2) / Math.sqrt(8);
+									ck = c1 / c2;
 
 								if (l == 0)
-									cl = 1 / Math.sqrt(8);
+									cl = 1 / c2;
 								else
-									cl = Math.sqrt(2) / Math.sqrt(8);
+									cl = c1 / c2;
 
-								dctR = colorArray[0][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctR = colorArray[0][k + r][l + c] * a;
 								sumR = sumR + ck * cl * dctR;
 
-								dctG = colorArray[1][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctG = colorArray[1][k + r][l + c] * a;
 								sumG = sumG + ck * cl * dctG;
 
-								dctB = colorArray[2][k + r][l + c] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctB = colorArray[2][k + r][l + c] * a;
 								sumB = sumB + ck * cl * dctB;
 							}
 						}
@@ -373,7 +374,9 @@ public class Picture extends SimplePicture {
 		int n1 = matrix[0].length;
 
 		int m = 8, n = 8;
-		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG;
+		double ck, cl, dctR, dctG, dctB, sumR, sumB, sumG, c1,c2;
+		c1 = Math.sqrt(2);
+		c2 = Math.sqrt(8);
 		for (int r = 0; r < m1; r += 8) { // for loops breaking up the image into 8x8 blocks
 			for (int c = 0; c < n1; c += 8) {
 
@@ -410,27 +413,27 @@ public class Picture extends SimplePicture {
 
 						for (k = 0; k < 8; k++) {
 							for (l = 0; l < 8; l++) {
+								
+								double a =  Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
+										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
 
 								if (k == 0)
-									ck = 1 / Math.sqrt(8);
+									ck = 1 / c2;
 								else
-									ck = Math.sqrt(2) / Math.sqrt(8);
+									ck = c1 / c2;
 
 								if (l == 0)
-									cl = 1 / Math.sqrt(8);
+									cl = 1 /c2;
 								else
-									cl = Math.sqrt(2) / Math.sqrt(8);
+									cl = c1 / c2;
 
-								dctR = blurredRedArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctR = blurredRedArray[k][l] *a;
 								sumR = sumR + ck * cl * dctR;
 
-								dctG = blurredGreenArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctG = blurredGreenArray[k][l] * a;
 								sumG = sumG + ck * cl * dctG;
 
-								dctB = blurredBlueArray[k][l] * Math.cos((2 * i + 1) * k * Math.PI / (2 * m))
-										* Math.cos((2 * j + 1) * l * Math.PI / (2 * n));
+								dctB = blurredBlueArray[k][l] * a;
 								sumB = sumB + ck * cl * dctB;
 							}
 						}
