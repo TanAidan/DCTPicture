@@ -56,7 +56,7 @@ public class PictureTester
 	//  beach.dct();
 	  System.out.println("dct done");
 
-	  beach.idct(beach.dct());
+	  beach.idctBlur(beach.dct());
 	  beach.explore();
 	  System.out.println("done");
 	  
